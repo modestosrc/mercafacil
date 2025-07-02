@@ -22,3 +22,55 @@ gerando indicadores e exportando resultados.
     main.py que vai executar o pipeline ETL.
 4. Os dados serão carregados no banco de dados Postgres e replicados no MongoDB.
     Os rsultados estarão disponiveis na pasta `output`.
+
+## Diagrama geral de funcionamento
+
+```
+      +------------------+
+      |  Arquivos .zip   |
+      | (vendas,         |
+      |  clientes,       |
+      |  produtos)       |
+      +--------+---------+
+               |
+               v
+      +--------+---------+
+      |  Extração &      |
+      |  Normalização    |
+      |  (pandas)        |
+      +--------+---------+
+               |
+               v
+      +--------+---------+
+      |  Validação &     |
+      |  Enriquecimento  |
+      |  (tratamento de  |
+      |  dados,          |
+      |  consistência,   |
+      |  join, etc)      |
+      +--------+---------+
+               |
+               v
+      +--------+---------+
+      | Carga Relacional |
+      | (PostgreSQL)     |
+      +----+------+------+
+           |      |
+           |      +-------------------------------+
+           |                                      |
+           v                                      v
+  +--------+---------+                  +---------+---------+
+  | Exportação SQL   |                  | Replicação MongoDB|
+  | (indicadores     |                  | (clientes)        |
+  |  vendas, clientes|                  +-------------------+
+  |  produtos, etc.) |
+  +--------+---------+
+           |
+           v
+  +--------+---------+
+  |  Geração de      |
+  |  Arquivos CSV    |
+  |  e Parquet       |
+  |  (outputs/)      |
+  +------------------+
+```
